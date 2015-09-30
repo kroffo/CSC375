@@ -66,31 +66,38 @@ public class TrainStation extends Frame implements WindowListener,ActionListener
         add(status);
         add(throughput);
         startTrain.addActionListener(this);
-        new Thread(() -> {
+        new Thread(() -> { //Thread to generate passengers
                 Random r = new Random();
                 while(true) {
-                    if (r.nextInt(10000000) == 22) {
+                    if (r.nextInt(1000000) == 22) {
                         Passenger p = new Passenger();
                         passengers.add(p);
                         addPassenger("waiting");
                         updateNumbers();
-                        new Thread(() -> {
-                                while(doorsClosed) {
-                                    try {
-                                        Thread.currentThread().sleep(100);
-                                    } catch (InterruptedException ex) {
-                                        Thread.currentThread().interrupt();
+                        // The analogy here is that the passengers are in a free for all trying to get a seat.
+                        // I use CAS to make sure if multiple passengers go for the same seat at the same time only one gets it
+                        // and the other(s) keep looking.
+                        new Thread(() -> { // Thread for a passenger attempting to board the train
+                                synchronized(this) {
+                                    while(doorsClosed) { // If the train is not allowing passengers on, wait until it is to attempt to get on
+                                        try {
+                                            this.wait();
+                                        } catch (InterruptedException ex) {
+                                            Thread.currentThread().interrupt();
+                                        }
                                     }
                                 }
                                 attemptingToBoard.incrementAndGet();
-                                while(!train1.addPassenger(p)) {
+                                while(!train1.addPassenger(p)) { // Attempt to grab a seat. Executes the contents of the loop if failed.
                                     if (doorsClosed) {
                                         attemptingToBoard.decrementAndGet();
-                                        while(doorsClosed) {
-                                            try {
-                                                Thread.currentThread().sleep(100);
-                                            } catch (InterruptedException ex) {
-                                                Thread.currentThread().interrupt();
+                                        synchronized(this) {
+                                            while(doorsClosed) { // If the train stops boarding, wait until it starts again to keep trying.
+                                                try {
+                                                    this.wait();
+                                                } catch (InterruptedException ex) {
+                                                    Thread.currentThread().interrupt();
+                                                }
                                             }
                                         }
                                         attemptingToBoard.incrementAndGet();
@@ -113,9 +120,8 @@ public class TrainStation extends Frame implements WindowListener,ActionListener
     
     public void closeDoors() { //Stop passengers from trying to board.
         status.setText("Doors closing...");
-        doorsClosed = true;
-        System.out.println(attemptingToBoard.get());
-        while(attemptingToBoard.get() > 0) {System.out.println(attemptingToBoard.get());}
+        Doorsclosed = true;
+        while(attemptingToBoard.get() > 0) {}
         return;
     }
 
@@ -124,8 +130,12 @@ public class TrainStation extends Frame implements WindowListener,ActionListener
          totalPassengers += numBoarded.get();
          numBoarded.set(0);
          train.stop();
-         status.setText("Train Waiting...");
-         doorsClosed = false;
+         synchronized(this) {
+             status.setText("Doors opening");
+             doorsClosed = false;
+             status.setText("Train Waiting");
+             this.notifyAll();
+         }
          startTrain.setEnabled(true);
     }
     
