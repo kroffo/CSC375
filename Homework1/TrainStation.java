@@ -69,7 +69,7 @@ public class TrainStation extends Frame implements WindowListener,ActionListener
         new Thread(() -> { //Thread to generate passengers
                 Random r = new Random();
                 while(true) {
-                    if (r.nextInt(1000000) == 22) {
+                    if (r.nextInt(10000000) == 22) {
                         Passenger p = new Passenger();
                         passengers.add(p);
                         addPassenger("waiting");
@@ -120,7 +120,7 @@ public class TrainStation extends Frame implements WindowListener,ActionListener
     
     public void closeDoors() { //Stop passengers from trying to board.
         status.setText("Doors closing...");
-        Doorsclosed = true;
+        doorsClosed = true;
         while(attemptingToBoard.get() > 0) {}
         return;
     }
