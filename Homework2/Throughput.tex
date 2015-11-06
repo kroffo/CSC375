@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\begin{tikzpicture}
+\begin{axis}[
+    symbolic x coords={1,2,3,4},
+    xtick=data,xlabel=Platform,ylabel=Throughput (operations / second), title=\textbf{Throughput across different platforms. JDK versus Kenny}]
+    \addplot[ybar,fill=blue] coordinates {
+        (1,138.974)
+        (2,58.681)
+        (3,100.901)
+        (4,101.731)
+    };
+\end{axis}
+\end{tikzpicture}
+\vspace{1cm}\\
+1: Mac OS X My Structure\\
+2: Mac OS X JDK Structure\\
+3: Satellite C55 Arch Linux My Structure\\
+4: Satellite C55 Arch Linux JDK Structure
+
+\end{document}
