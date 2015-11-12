@@ -3,16 +3,13 @@
 
 \begin{document}
 
-1: My Structure\\
-2: JDK Structure\\
-
 \begin{tikzpicture}
 \begin{axis}[
-    symbolic x coords={1,2,3,4},
+    symbolic x coords={Me,JDK},
     xtick=data,xlabel=Platform,ylabel=Throughput (operations / second), title=\textbf{High Read Throughput on Rho. JDK versus Kenny}]
     \addplot[ybar,fill=blue] coordinates {
-        (1,37.202)
-        (2,37.121)
+        (Me,37.202)
+        (JDK,37.121)
     };
 \end{axis}
 \end{tikzpicture}
@@ -20,11 +17,11 @@
 
 \begin{tikzpicture}
 \begin{axis}[
-    symbolic x coords={1,2,3,4},
+    symbolic x coords={Me,JDK},
     xtick=data,xlabel=Platform,ylabel=Throughput (operations / second), title=\textbf{High Read Throughput on Wolf. JDK versus Kenny}]
     \addplot[ybar,fill=blue] coordinates {
-        (1,68.684)
-        (2,69.684)
+        (Me,68.684)
+        (JDK,69.684)
     };
 \end{axis}
 \end{tikzpicture}
@@ -32,11 +29,11 @@
 
 \begin{tikzpicture}
 \begin{axis}[
-    symbolic x coords={1,2,3,4},
+    symbolic x coords={Me,JDK},
     xtick=data,xlabel=Platform,ylabel=Throughput (operations / second), title=\textbf{High Write Throughput on Rho. JDK versus Kenny}]
     \addplot[ybar,fill=blue] coordinates {
-        (1,129.964)
-        (2,130.725)
+        (Me,129.964)
+        (JDK,130.725)
     };
 \end{axis}
 \end{tikzpicture}
@@ -44,14 +41,13 @@
 
 \begin{tikzpicture}
 \begin{axis}[
-    symbolic x coords={1,2,3,4},
+    symbolic x coords={Me,JDK},
     xtick=data,xlabel=Platform,ylabel=Throughput (operations / second), title=\textbf{High Write Throughput on Wolf. JDK versus Kenny}]
     \addplot[ybar,fill=blue] coordinates {
-        (1,309.743)
-        (2,311.976)
+        (Me,309.743)
+        (JDK,311.976)
     };
 \end{axis}
 \end{tikzpicture}
-\vspace{1cm}\\
 
 \end{document}
