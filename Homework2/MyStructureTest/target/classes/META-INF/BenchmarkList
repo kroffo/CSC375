@@ -1,1 +1,1 @@
-org.sample.MyBenchmark===,===org.sample.generated.MyBenchmark_testMethod_jmhTest===,===testMethod===,===Throughput===,===1====,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]
+benchmarks.MyBenchmark===,===benchmarks.generated.MyBenchmark_testMethod_jmhTest===,===testMethod===,===Throughput===,===1====,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[]===,===[SECONDS]===,===[]===,===[]

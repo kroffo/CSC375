@@ -1,4 +1,4 @@
-package org.sample;
+package benchmarks;
 
 public class Song {
     private String name;

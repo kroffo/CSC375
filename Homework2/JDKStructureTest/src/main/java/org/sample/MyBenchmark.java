@@ -1,48 +1,62 @@
 package org.sample;
 
 import java.util.Random;
-import org.openjdk.jmh.annotations.Benchmark;
+import java.util.concurrent.TimeUnit;
+import org.openjdk.jmh.annotations.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MyBenchmark {
-    @Benchmark
-    public void testMethod() {
-        final int numberOfInitialSongs = 100;
-        Song[] songs = new Song[numberOfInitialSongs];
-        Random r = new Random();
-        for (int i = 0; i < songs.length; i++) {
-            songs[i] = new Song("Song" + i, r.nextInt(10) + 3);
-        }
 
-        MusicBase base = new MusicBase(songs);
+    @State(Scope.Thread)
+    public static class MyBase {
+        int numberOfInitialSongs = 100;
+        MusicBase base = new MusicBase(numberOfInitialSongs);
+    }
+
+    @Benchmark @BenchmarkMode(Mode.Throughput) @OutputTimeUnit(TimeUnit.SECONDS)
+    public void testMethod(MyBase myBase) throws InterruptedException {
+        Thread[] threads = new Thread[30];
+
         
-        for (int i = 0; i < 1; i++) {
-            new Thread(() -> {
-                    Random randy = new Random();
-                    for (int k = 0; k < 2; k++) {
-                        String songName = "Song" + randy.nextInt(base.getSize());
-                        Song song = base.getSong(songName);
-                        if (song != null) {
-                            song.listen();
-                        }
+        for (int i = 0; i < 10; i++) {
+            
+            threads[i] = new Thread(() -> {
+                    for (int k = 0; k < 20; k++) {
+                        String songName = "Song" + ThreadLocalRandom.current().nextInt(20) + 30;
+                        Song song = myBase.base.getSong(songName);
+                        //if (song != null) {
+                        //    song.listen();
+                        //}
                     }
-            },"Listener" + i).start();
+                },"Listener" + i);
         }
         
 
-        // The thread which adds songs!
-        new Thread(() -> {
-                Random randy = new Random();
-                int nameCounter = numberOfInitialSongs;
-                for(int k = 0; k < 100; k++) {
-                        base.addSong(new Song("Song" + nameCounter, randy.nextInt(10) + 3));
-                }
-        },"Adder").start();
-
-        // The thread which removes songs!
-        new Thread(() -> {
-                for(int k = 0; k < 100; k++) {
-                        base.removeSong("Song" + k);
-                }
-        },"Deleter").start();
+        for (int i = 10; i < 20; i++) {
+            // The thread which adds songs!
+            threads[i] = new Thread(() -> {
+                    int nameCounter = myBase.numberOfInitialSongs;
+                    for(int k = 0; k < 20; k++) {
+                        myBase.base.addSong(new Song("Song" + nameCounter++, 2)); //nameCounter can potentially lose counts but I don't care, it's close enough
+                    }
+                },"Adder" + i);
+        }
+        
+        for (int i = 20; i < 30; i++) {
+            // The thread which removes songs!
+            threads[i] = new Thread(() -> {
+                    for(int k = 0; k < 20; k++) {
+                        myBase.base.removeSong("Song" + ThreadLocalRandom.current().nextInt(myBase.base.getSize()));
+                    }
+                },"Deleter" + i);
+        }
+        
+        for (int i = 0; i < 30; i++) {
+            threads[i].start();
+        }
+        for (int i = 0; i < 30; i++) {
+            threads[i].join();
+        }
+        
     }
 }

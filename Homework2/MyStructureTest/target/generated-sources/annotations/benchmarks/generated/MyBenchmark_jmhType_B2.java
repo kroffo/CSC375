@@ -1,4 +1,4 @@
-package org.sample.generated;
+package benchmarks.generated;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 public class MyBenchmark_jmhType_B2 extends MyBenchmark_jmhType_B1 {
     public volatile int setupTrialMutex;

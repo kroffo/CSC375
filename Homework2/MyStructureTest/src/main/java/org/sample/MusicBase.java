@@ -1,4 +1,4 @@
-package org.sample;
+package benchmarks;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,11 +7,11 @@ public class MusicBase {
     private volatile HashMap<String, Song> songBase;
     private AtomicInteger seq = new AtomicInteger(); // This is my seqlock
     private AtomicInteger numberOfSongs = new AtomicInteger();
-
-    public MusicBase(Song[] initialSongs) {
-        songBase = new HashMap<String, Song>(initialSongs.length);
-        for (int i = 0; i < initialSongs.length; ++i) {
-            addSong(initialSongs[i]);
+    
+    public MusicBase(int numberOfInitialSongs) {
+        songBase = new HashMap<String, Song>(numberOfInitialSongs);
+        for (int i = 0; i < numberOfInitialSongs; i++) {
+            addSong(new Song("Song" + i, 1));
         }
     }
 
@@ -26,7 +26,6 @@ public class MusicBase {
                         if (s == songBase.get(s.getName())) {
                             numberOfSongs.incrementAndGet();
                             seq.incrementAndGet();
-                            System.out.println(Thread.currentThread().getName() + " added " + s.getName());
                             return true;
                         }
                         seq.incrementAndGet();
@@ -50,7 +49,6 @@ public class MusicBase {
                         songBase.remove(name);
                         numberOfSongs.decrementAndGet();
                         seq.incrementAndGet();
-                        System.out.println(Thread.currentThread().getName() + " removed " + name);
                         return;
                     }
                 }
